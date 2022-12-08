@@ -8,11 +8,11 @@ Unityエディタの上部に任意のアプリの起動ボタンを追加する
 3. `https://github.com/AoiKamishiro/ExternalToolsLauncher.git` をコピペして `Add` をクリック
 
 ## 使い方
-[SampleImage](./Textures/Readme/SampleImage.png)
+[](./Textures/Readme/SampleImage.png)
 1. Unity エディタ上部の再生ボタン横に各種機能が追加されます。クリックすることで開けます。
 
 ## カスタマイズ
-[SettingsImage](./Textures/Readme/Settings.png)
+[](./Textures/Readme/Settings.png)
 1. Unityのメニューバーから `Editor` -> `Preferences` を開く
 2. Preferencesウィンドウの左側から `External Tools Launcher` を開く
 3. 各プロファイルの設定が編集できます。
