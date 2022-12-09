@@ -134,7 +134,16 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
                         saveData.Profiles[i].Name = EditorGUILayout.DelayedTextField("Profile Name", saveData.Profiles[i].Name);
                         EditorGUI.indentLevel++;
                         saveData.Profiles[i].Show = EditorGUILayout.Toggle("Visiblity", saveData.Profiles[i].Show);
+
+                        EditorGUILayout.BeginHorizontal();
                         saveData.Profiles[i].Path = EditorGUILayout.DelayedTextField("Path", saveData.Profiles[i].Path);
+                        if (GUILayout.Button("Load", GUILayout.Width(100)))
+                        {
+                            string path = EditorUtility.OpenFilePanel("Open", "Assets", "*");
+                            if (!string.IsNullOrEmpty(path)) saveData.Profiles[i].Path = path;
+                        }
+                        EditorGUILayout.EndHorizontal();
+
                         saveData.Profiles[i].Args = EditorGUILayout.DelayedTextField("Arguments", saveData.Profiles[i].Args);
                         int iconOrder = EditorGUILayout.Popup("Icon", GUIDtoIconOrder(saveData.Profiles[i].Icon), IconName);
                         saveData.Profiles[i].Icon = IconGUIDs[iconOrder];
@@ -152,7 +161,7 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
                         }
                         EditorGUI.EndDisabledGroup();
                         EditorGUILayout.Space(32);
-                        if (GUILayout.Button("Delete Profile", new GUILayoutOption[] { GUILayout.ExpandWidth(false) }))
+                        if (GUILayout.Button("Delete Profile", GUILayout.Width(100)))
                         {
                             deleteGuid = saveData.Profiles[i].Guid;
                         }
