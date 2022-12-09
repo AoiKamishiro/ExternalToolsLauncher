@@ -4,14 +4,20 @@ Unityエディタの上部に任意のアプリの起動ボタンを追加する
 データはEditorPrefs内に保存されるため、設定はマシン毎に保存されます。共同開発のプロジェクトでも問題なく活用できます。  
 また、データのエクスポート機能もあるため、設定の移行も簡単にできます。  
 
-## 導入
-1. Unityのメニューバーから `Window` -> `Package Manager` を開く
-2. Package Manager の左上にある `+` から `Add package from git URL` をクリック
-3. `https://github.com/AoiKamishiro/ExternalToolsLauncher.git` をコピペして `Add` をクリック
-
 ## 使い方
+Unity エディタ上部の再生ボタン横に各種機能が追加されます。クリックすることで開けます。
+
 ![SampleImage](./Textures/Readme/SampleImage.png)
-1. Unity エディタ上部の再生ボタン横に各種機能が追加されます。クリックすることで開けます。
+
+## 導入
+1. Unityのメニューバーから `Edit` -> `Project Settings` を開く  
+2. Project Settings の左上にある `Package Manager` に、以下の内容で `Scoped Registries` を追加  
+3. Name -> `ExternalToolsLauncher`, URL -> `https://package.openupm.com`, Scope(s) -> `online.kamishiro.externaltoolslauncher`  
+4. Unityのメニューバーから `Windows` -> `Package Manager` を開く  
+5. Package Manager の左上にある `+` ボタン右のドロップダウンから、`Custom` を選択  
+6. 一覧の中から`External Tools Launcher`を探し、選択した画面の右下の `Install` をクリック  
+
+![Image](./Textures/Readme/ProjectSettings.png)
 
 ## カスタマイズ
 ![SettingsImage](./Textures/Readme/Settings.png)
