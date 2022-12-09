@@ -34,5 +34,6 @@ Unity エディタ上部の再生ボタン横に各種機能が追加されま�
 ## ライセンス
 [MIT](./LICENSE.md)
 
-### 参考ライブラリ
+### 利用ライブラリ
 [Toolbar Extender](https://github.com/marijnz/unity-toolbar-extender/tree/master/Editor)
+[windows-terminal-icons](https://github.com/TheFern2/windows-terminal-icons)
