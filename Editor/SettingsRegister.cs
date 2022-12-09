@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,7 +8,8 @@ using UnityEngine;
 
 namespace online.kamishiro.unityeditor.externaltoolslauncher
 {
-    internal static class SettingsResiter
+    [InitializeOnLoad]
+    public static class SettingsResiter
     {
         private const string DEFAULT_VALUE = "{\"Profiles\":[{\"Show\":true,\"Name\":\"VSCode\",\"Path\":\"code\",\"Args\":\"\\\"{ProjectPath}\\\"\",\"Icon\":\"fa1bd4f685d92654cac4088f0697676b\"},{\"Show\":true,\"Name\":\"Visual Studio\",\"Path\":\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Professional\\\\Common7\\\\IDE\\\\devenv.exe\",\"Args\":\"\\\"{ProjectPath}/{SlnName}\\\"\",\"Icon\":\"48ffc9dc2bd7d9144923a0ae241d542a\"},{\"Show\":true,\"Name\":\"Jetbrains Rider\",\"Path\":\"C:\\\\Program Files\\\\JetBrains\\\\JetBrains Rider 2022.3\\\\bin\\\\rider64.exe\",\"Args\":\"\\\"{ProjectPath}/{SlnName}\\\"\",\"Icon\":\"b7a9754d051cade459986006582aabdc\"},{\"Show\":true,\"Name\":\"PowerShell\",\"Path\":\"wt\",\"Args\":\"-d \\\"{ProjectPath}\\\" -p \\\"PowerShell\\\"\",\"Icon\":\"d845b85b2b27fe948a1860b5c7c6a4f7\"},{\"Show\":true,\"Name\":\"Github\",\"Path\":\"https://github.com/AoiKamishiro/ExternalToolsLauncher\",\"Args\":\"\",\"Icon\":\"3c916a1640d0eaa4ea1e50e8a5a6c528\"}]}";
         private const string PREFS_KEY = "KM_ETL_SETTINGS";
@@ -229,7 +230,5 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
             _array[no] = up;
             return new string(_array);
         }
-
     }
-
 }
