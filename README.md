@@ -14,7 +14,7 @@ Unity エディタ上部の再生ボタン横に各種機能が追加されま�
 2. Project Settings の左上にある `Package Manager` に、以下の内容で `Scoped Registries` を追加  
 3. Name -> `ExternalToolsLauncher`, URL -> `https://package.openupm.com`, Scope(s) -> `online.kamishiro.externaltoolslauncher`  
 4. Unityのメニューバーから `Windows` -> `Package Manager` を開く  
-5. Package Manager の左上にある `+` ボタン右のドロップダウンから、`Custom` を選択  
+5. Package Manager の左上にある `+` ボタン右のドロップダウンから、`My Registries` を選択  
 6. 一覧の中から`External Tools Launcher`を探し、選択した画面の右下の `Install` をクリック  
 
 ![Image](./Textures/Readme/ProjectSettings.png)
