@@ -9,22 +9,22 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
 {
     public static class SettingsResiter
     {
-        private const string DEFAULT_VALUE = "{\"Profiles\":[{\"Show\":true,\"Name\":\"VSCode\",\"Path\":\"code\",\"Args\":\"\\\"{ProjectPath}\\\"\",\"Icon\":\"fa1bd4f685d92654cac4088f0697676b\"},{\"Show\":true,\"Name\":\"Visual Studio\",\"Path\":\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Professional\\\\Common7\\\\IDE\\\\devenv.exe\",\"Args\":\"\\\"{ProjectPath}/{SlnName}\\\"\",\"Icon\":\"48ffc9dc2bd7d9144923a0ae241d542a\"},{\"Show\":true,\"Name\":\"Jetbrains Rider\",\"Path\":\"C:\\\\Program Files\\\\JetBrains\\\\JetBrains Rider 2022.3\\\\bin\\\\rider64.exe\",\"Args\":\"\\\"{ProjectPath}/{SlnName}\\\"\",\"Icon\":\"b7a9754d051cade459986006582aabdc\"},{\"Show\":true,\"Name\":\"PowerShell\",\"Path\":\"wt\",\"Args\":\"-d \\\"{ProjectPath}\\\" -p \\\"PowerShell\\\"\",\"Icon\":\"d845b85b2b27fe948a1860b5c7c6a4f7\"},{\"Show\":true,\"Name\":\"Github\",\"Path\":\"https://github.com/AoiKamishiro/ExternalToolsLauncher\",\"Args\":\"\",\"Icon\":\"3c916a1640d0eaa4ea1e50e8a5a6c528\"}]}";
         private const string PREFS_KEY = "KM_ETL_SETTINGS";
         private const string ICON_DIR_GUID = "7ee47ee6d736af5448d6f8ad22f5f511";
+        private const string DEFAULT_DATA_GUID = "465f1a32ea1ceb34e969bbd94417a4dc";
+
         private static SaveData DefaultSaveData
         {
-            get => JsonUtility.FromJson<SaveData>(DEFAULT_VALUE);
+            get => FromJsonFile(AssetDatabase.GUIDToAssetPath(DEFAULT_DATA_GUID));
         }
-
         internal static SaveData SaveData
         {
             get
             {
-                string load = EditorPrefs.GetString(PREFS_KEY, DEFAULT_VALUE);
+                string load = EditorPrefs.GetString(PREFS_KEY, string.Empty);
                 if (string.IsNullOrEmpty(load))
                 {
-                    return new SaveData();
+                    return DefaultSaveData;
                 }
                 SaveData saveData = JsonUtility.FromJson<SaveData>(load);
                 return saveData;
@@ -99,29 +99,12 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
                         if (GUILayout.Button("Export Profiles"))
                         {
                             string savePath = EditorUtility.SaveFilePanel("Save", "Assets", "ETLSettings", "json");
-                            if (!string.IsNullOrEmpty(savePath))
-                            {
-                                Encoding enc = Encoding.GetEncoding("Shift_JIS");
-                                StreamWriter writer = new StreamWriter(savePath, false, enc);
-                                writer.WriteLine(JsonUtility.ToJson(saveData));
-                                writer.Close();
-                            }
+                            ToJsonFile(savePath, saveData);
                         }
                         if (GUILayout.Button("Import Profiles"))
                         {
                             string loadPath = EditorUtility.OpenFilePanel("Open", "Assets", "json");
-                            StreamReader rader = new StreamReader(loadPath);
-                            string json = rader.ReadToEnd();
-                            rader.Close();
-                            try
-                            {
-                                SaveData importedData = JsonUtility.FromJson<SaveData>(json);
-                                saveData = importedData;
-                            }
-                            catch
-                            {
-                                Debug.LogError("ETL Error: Incorrect Json.");
-                            }
+                            saveData = FromJsonFile(loadPath);
                         }
                         EditorGUILayout.EndHorizontal();
                     }
@@ -250,6 +233,33 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
             char up = char.ToUpper(_array[0]);
             _array[0] = up;
             return new string(_array);
+        }
+
+        private static SaveData FromJsonFile(string path)
+        {
+            StreamReader rader = new StreamReader(path);
+            string json = rader.ReadToEnd();
+            rader.Close();
+            try
+            {
+                SaveData data = JsonUtility.FromJson<SaveData>(json);
+                return data;
+            }
+            catch
+            {
+                Debug.LogError("ETL Error: Incorrect Json EE.");
+                throw new System.Exception("ETL Error: Incorrect Json.");
+            }
+        }
+        private static void ToJsonFile(string path, SaveData saveData)
+        {
+            if (!string.IsNullOrEmpty(path))
+            {
+                Encoding enc = Encoding.GetEncoding("Shift_JIS");
+                StreamWriter writer = new StreamWriter(path, false, enc);
+                writer.WriteLine(JsonUtility.ToJson(saveData));
+                writer.Close();
+            }
         }
     }
 }
