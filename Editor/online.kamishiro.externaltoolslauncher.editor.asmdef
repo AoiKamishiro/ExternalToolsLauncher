@@ -1,5 +1,5 @@
 {
-    "name": "online.kamishiro.unityeditor.externaltoolslauncher.editor",
+    "name": "online.kamishiro.externaltoolslauncher.editor",
     "references": [],
     "includePlatforms": [
         "Editor"

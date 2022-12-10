@@ -1,2 +1,1 @@
-online.kamishiro.unityeditor.externaltoolslauncher © 2022 AoiKamishiro
-
+online.kamishiro.externaltoolslauncher © 2022 AoiKamishiro
