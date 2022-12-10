@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -8,11 +7,15 @@ using UnityEngine;
 
 namespace online.kamishiro.unityeditor.externaltoolslauncher
 {
-    internal static class SettingsResiter
+    public static class SettingsResiter
     {
-        private const string DEFAULT_VALUE = "{\"Profiles\":[{\"Show\":true,\"Name\":\"VSCode\",\"Path\":\"code\",\"Args\":\"{ProjectPath}\",\"Icon\":\"fa1bd4f685d92654cac4088f0697676b\"},{\"Show\":true,\"Name\":\"Visual Studio\",\"Path\":\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Community\\\\Common7\\\\IDE\\\\devenv.exe\",\"Args\":\"{ProjectPath}/{SlnName}\",\"Icon\":\"48ffc9dc2bd7d9144923a0ae241d542a\"},{\"Show\":true,\"Name\":\"Jetbrains Rider\",\"Path\":\"C:\\\\Program Files\\\\JetBrains\\\\JetBrains Rider 2022.3\\\\bin\\\\rider64.exe\",\"Args\":\"{ProjectPath}/{SlnName}\",\"Icon\":\"b7a9754d051cade459986006582aabdc\"},{\"Show\":true,\"Name\":\"PowerShell\",\"Path\":\"wt\",\"Args\":\"-d {ProjectPath} -p \\\"Powershell\\\"\",\"Icon\":\"d845b85b2b27fe948a1860b5c7c6a4f7\"},{\"Show\":true,\"Name\":\"Github\",\"Path\":\"https://github.com/AoiKamishiro/ExternalToolsLauncher\",\"Args\":\"\",\"Icon\":\"3c916a1640d0eaa4ea1e50e8a5a6c528\"}]}";
+        private const string DEFAULT_VALUE = "{\"Profiles\":[{\"Show\":true,\"Name\":\"VSCode\",\"Path\":\"code\",\"Args\":\"\\\"{ProjectPath}\\\"\",\"Icon\":\"fa1bd4f685d92654cac4088f0697676b\"},{\"Show\":true,\"Name\":\"Visual Studio\",\"Path\":\"C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Professional\\\\Common7\\\\IDE\\\\devenv.exe\",\"Args\":\"\\\"{ProjectPath}/{SlnName}\\\"\",\"Icon\":\"48ffc9dc2bd7d9144923a0ae241d542a\"},{\"Show\":true,\"Name\":\"Jetbrains Rider\",\"Path\":\"C:\\\\Program Files\\\\JetBrains\\\\JetBrains Rider 2022.3\\\\bin\\\\rider64.exe\",\"Args\":\"\\\"{ProjectPath}/{SlnName}\\\"\",\"Icon\":\"b7a9754d051cade459986006582aabdc\"},{\"Show\":true,\"Name\":\"PowerShell\",\"Path\":\"wt\",\"Args\":\"-d \\\"{ProjectPath}\\\" -p \\\"PowerShell\\\"\",\"Icon\":\"d845b85b2b27fe948a1860b5c7c6a4f7\"},{\"Show\":true,\"Name\":\"Github\",\"Path\":\"https://github.com/AoiKamishiro/ExternalToolsLauncher\",\"Args\":\"\",\"Icon\":\"3c916a1640d0eaa4ea1e50e8a5a6c528\"}]}";
         private const string PREFS_KEY = "KM_ETL_SETTINGS";
         private const string ICON_DIR_GUID = "7ee47ee6d736af5448d6f8ad22f5f511";
+        private static SaveData DefaultSaveData
+        {
+            get => JsonUtility.FromJson<SaveData>(DEFAULT_VALUE);
+        }
 
         internal static SaveData SaveData
         {
@@ -32,33 +35,25 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
                 EditorPrefs.SetString(PREFS_KEY, save);
             }
         }
-        private static SaveData DefaultSaveData
+
+        private static Dictionary<string, string> _icons;
+        private static Dictionary<string, string> Icons
         {
-            get => JsonUtility.FromJson<SaveData>(DEFAULT_VALUE);
+            get
+            {
+                if (_icons == null)
+                {
+                    _icons = new Dictionary<string, string>();
+                    foreach (string guid in AssetDatabase.FindAssets($"t: {nameof(Texture2D)}", new string[] { AssetDatabase.GUIDToAssetPath(ICON_DIR_GUID) }))
+                    {
+                        _icons.Add(guid, Path.GetFileNameWithoutExtension(AssetDatabase.GUIDToAssetPath(guid)).Proper());
+                    }
+                }
+                return _icons;
+            }
         }
-        private static readonly string[] IconName = Array.Empty<string>();
-        private static readonly string[] IconGUIDs = Array.Empty<string>();
+
         private static bool showExportSettings = false;
-
-        private static int GUIDtoIconOrder(string guid)
-        {
-            int order = 0;
-            foreach (string d in IconGUIDs)
-            {
-                if (d == guid) { return order; }
-                order++;
-            }
-            return 0;
-        }
-
-        static SettingsResiter()
-        {
-            foreach (string guid in AssetDatabase.FindAssets("t:Texture2D", new string[] { AssetDatabase.GUIDToAssetPath(ICON_DIR_GUID) }))
-            {
-                IconName = IconName.Append(Path.GetFileNameWithoutExtension(AssetDatabase.GUIDToAssetPath(guid)).ToUpper(0)).ToArray();
-                IconGUIDs = IconGUIDs.Append(guid).ToArray();
-            }
-        }
 
         [SettingsProvider]
         public static SettingsProvider CreateSettingsProvider()
@@ -84,8 +79,18 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
                     EditorGUILayout.HelpBox("{ProjectPath}はプロジェクトのフォルダのパスを返します。\n{ProjectName}はプロジェクトのフォルダ名を返します。\n{SlnName}はソリューションファイル名を返します。", MessageType.Info);
                     EditorGUILayout.Space();
                     EditorGUILayout.BeginHorizontal();
-                    if (GUILayout.Button("Add Profile")) { saveData.Profiles = saveData.Profiles.Append(new SaveData.Profile()).ToArray(); }
-                    if (GUILayout.Button("Reset to Default")) { saveData = DefaultSaveData; }
+                    if (GUILayout.Button("Add Profile"))
+                    {
+                        SaveData.Profile newProfile = new SaveData.Profile
+                        {
+                            Show = true
+                        };
+                        saveData.Profiles = saveData.Profiles.Append(newProfile).ToArray();
+                    }
+                    if (GUILayout.Button("Reset to Default"))
+                    {
+                        saveData = DefaultSaveData;
+                    }
                     EditorGUILayout.EndHorizontal();
                     showExportSettings = EditorGUILayout.Foldout(showExportSettings, "Backup Settings");
                     if (showExportSettings)
@@ -133,10 +138,19 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
                         saveData.Profiles[i].Name = EditorGUILayout.DelayedTextField("Profile Name", saveData.Profiles[i].Name);
                         EditorGUI.indentLevel++;
                         saveData.Profiles[i].Show = EditorGUILayout.Toggle("Visiblity", saveData.Profiles[i].Show);
+
+                        EditorGUILayout.BeginHorizontal();
                         saveData.Profiles[i].Path = EditorGUILayout.DelayedTextField("Path", saveData.Profiles[i].Path);
+                        if (GUILayout.Button("Load", GUILayout.Width(100)))
+                        {
+                            string path = EditorUtility.OpenFilePanel("Open", "Assets", "*");
+                            if (!string.IsNullOrEmpty(path)) saveData.Profiles[i].Path = path;
+                        }
+                        EditorGUILayout.EndHorizontal();
+
                         saveData.Profiles[i].Args = EditorGUILayout.DelayedTextField("Arguments", saveData.Profiles[i].Args);
-                        int iconOrder = EditorGUILayout.Popup("Icon", GUIDtoIconOrder(saveData.Profiles[i].Icon), IconName);
-                        saveData.Profiles[i].Icon = IconGUIDs[iconOrder];
+                        int iconOrder = EditorGUILayout.Popup("Icon", GUIDtoIconOrder(saveData.Profiles[i].Icon), Icons.Values.ToArray());
+                        saveData.Profiles[i].Icon = Icons.Keys.ToArray()[iconOrder];
                         EditorGUILayout.BeginHorizontal();
                         EditorGUI.BeginDisabledGroup(i == 0);
                         if (GUILayout.Button("Up"))
@@ -151,7 +165,7 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
                         }
                         EditorGUI.EndDisabledGroup();
                         EditorGUILayout.Space(32);
-                        if (GUILayout.Button("Delete Profile", new GUILayoutOption[] { GUILayout.ExpandWidth(false) }))
+                        if (GUILayout.Button("Delete Profile", GUILayout.Width(100)))
                         {
                             deleteGuid = saveData.Profiles[i].Guid;
                         }
@@ -217,19 +231,25 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
             };
             return provider;
         }
-        private static string ToUpper(this string self, int no = 0)
-        {
-            if (no > self.Length)
-            {
-                return self;
-            }
 
-            char[] _array = self.ToCharArray();
-            char up = char.ToUpper(_array[no]);
-            _array[no] = up;
-            return new string(_array);
+
+        private static int GUIDtoIconOrder(string guid)
+        {
+            int order = 0;
+            foreach (KeyValuePair<string, string> icon in Icons)
+            {
+                if (icon.Key == guid) { return order; }
+                order++;
+            }
+            return 0;
         }
 
+        private static string Proper(this string self)
+        {
+            char[] _array = self.ToCharArray();
+            char up = char.ToUpper(_array[0]);
+            _array[0] = up;
+            return new string(_array);
+        }
     }
-
 }
