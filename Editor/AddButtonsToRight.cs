@@ -9,6 +9,7 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
     public static class AddButtonsToRight
     {
         private static readonly string dirPath = Directory.GetParent(Application.dataPath).FullName;
+        private static readonly string dirName = Directory.GetParent(Application.dataPath).Name;
         private static readonly string slnName = $"{Directory.GetParent(Application.dataPath).Name}.sln";
         static AddButtonsToRight()
         {
@@ -35,8 +36,8 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
         }
         private static void StartProcess(string file, string args)
         {
-            file = file.Replace("{ProjectPath}", dirPath).Replace("{SlnName}", slnName);
-            args = args.Replace("{ProjectPath}", dirPath).Replace("{SlnName}", slnName);
+            file = file.Replace("{ProjectPath}", dirPath).Replace("{ProjectName}", dirName).Replace("{SlnName}", slnName);
+            args = args.Replace("{ProjectPath}", dirPath).Replace("{ProjectName}", dirName).Replace("{SlnName}", slnName);
             Process process = new Process();
             process.StartInfo.FileName = file;
             process.StartInfo.Arguments = args;
