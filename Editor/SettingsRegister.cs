@@ -85,8 +85,18 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
                     EditorGUILayout.HelpBox("{ProjectPath}はプロジェクトのフォルダのパスを返します。\n{SlnName}はソリューションファイル名を返します。", MessageType.Info);
                     EditorGUILayout.Space();
                     EditorGUILayout.BeginHorizontal();
-                    if (GUILayout.Button("Add Profile")) { saveData.Profiles = saveData.Profiles.Append(new SaveData.Profile()).ToArray(); }
-                    if (GUILayout.Button("Reset to Default")) { saveData = DefaultSaveData; }
+                    if (GUILayout.Button("Add Profile"))
+                    {
+                        SaveData.Profile newProfile = new SaveData.Profile
+                        {
+                            Show = true
+                        };
+                        saveData.Profiles = saveData.Profiles.Append(newProfile).ToArray();
+                    }
+                    if (GUILayout.Button("Reset to Default"))
+                    {
+                        saveData = DefaultSaveData;
+                    }
                     EditorGUILayout.EndHorizontal();
                     showExportSettings = EditorGUILayout.Foldout(showExportSettings, "Backup Settings");
                     if (showExportSettings)
