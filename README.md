@@ -13,7 +13,7 @@ Unity エディタ上部の再生ボタン横に各種機能が追加されま�
 ## 導入
 1. Unityのメニューバーから `Edit` -> `Project Settings` を開く  
 2. Project Settings の左上にある `Package Manager` に、次の内容で `Scoped Registries` を追加  
-> `Name` -> `ExternalToolsLauncher` 
+> `Name` -> `ExternalToolsLauncher`  
 > `URL` -> `https://package.openupm.com`  
 > `Scope(s)` -> `online.kamishiro.externaltoolslauncher`  
 3. Unityのメニューバーから `Windows` -> `Package Manager` を開く  
