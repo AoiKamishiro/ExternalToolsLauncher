@@ -13,7 +13,10 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
         private static readonly string slnName = $"{Directory.GetParent(Application.dataPath).Name}.sln";
         static AddButtonsToRight()
         {
-            typeof(Editor).Assembly.GetType("UnityEditor.SyncVS").GetMethod("SyncSolution").Invoke(null, null);
+            if (!File.Exists($"{dirPath}/{slnName}"))
+            {
+                typeof(Editor).Assembly.GetType("UnityEditor.SyncVS").GetMethod("SyncSolution").Invoke(null, null);
+            }
             ToolbarExtender.RightToolbarGUI.Add(OnToolbarGUI);
         }
 
