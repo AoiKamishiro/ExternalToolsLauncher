@@ -21,7 +21,7 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
         {
             public bool Show, UseExternalIcon;
             public string Name, Path, Args, Icon, ExternalIconPath;
-            public DateTimeOffset LastChanged, LastExternalIconLoaded;
+            public DateTimeOffset LastChanged, LastIconLoaded;
 
             [NonSerialized]
             private string _uuid;
@@ -46,29 +46,26 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
             {
                 get
                 {
-                    if (!UseExternalIcon)
+                    if(_iconTexture==null || (_iconTexture!=null && LastIconLoaded < LastChanged))
                     {
-                        if (_iconTexture != null && AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(_iconTexture)) != Icon) { _iconTexture = null; }
-                        if (_iconTexture == null) { _iconTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(Icon)); }
-                    }
-                    else
-                    {
-                        if (_iconTexture == null)
+                        if (UseExternalIcon)
                         {
-                            _iconTexture = new Texture2D(0, 0);
                             if (File.Exists(ExternalIconPath))
                             {
                                 _iconTexture = LoadExternalTexture(ExternalIconPath);
                             }
+                            if (_iconTexture == null)
+                            {
+                                _iconTexture = new Texture2D(0, 0);
+                            }
                         }
                         else
                         {
-                            if (LastExternalIconLoaded < LastChanged)
-                            {
-                                _iconTexture = LoadExternalTexture(ExternalIconPath);
-                            }
+                            _iconTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(Icon));
                         }
+                        LastIconLoaded = DateTimeOffset.UtcNow;
                     }
+
                     return _iconTexture;
                 }
             }
@@ -89,9 +86,11 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
                         values = bin.ReadBytes((int)bin.BaseStream.Length);
                     }
                 }
-                texture2D.LoadImage(values);
-                LastExternalIconLoaded = DateTimeOffset.UtcNow;
-                return texture2D;
+                if (texture2D.LoadImage(values))
+                {
+                    return texture2D;
+                }
+                return null;
             }
         }
     }
