@@ -154,12 +154,12 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
 
                 EditorGUILayout.BeginHorizontal(GUI.skin.box);
                 EditorGUILayout.BeginVertical();
-                saveData.Profiles[i].Name = EditorGUILayout.DelayedTextField("Profile Name", saveData.Profiles[i].Name);
+                saveData.Profiles[i].Name = EditorGUILayout.TextField("Profile Name", saveData.Profiles[i].Name);
                 EditorGUI.indentLevel++;
                 saveData.Profiles[i].Show = EditorGUILayout.Toggle("Visiblity", saveData.Profiles[i].Show);
 
                 EditorGUILayout.BeginHorizontal();
-                saveData.Profiles[i].Path = EditorGUILayout.DelayedTextField("Path", saveData.Profiles[i].Path);
+                saveData.Profiles[i].Path = EditorGUILayout.TextField("Path", saveData.Profiles[i].Path);
                 if (GUILayout.Button("Load", GUILayout.Width(100)))
                 {
                     string path = EditorUtility.OpenFilePanel("Open", "Assets", "*");
@@ -167,7 +167,7 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
                 }
                 EditorGUILayout.EndHorizontal();
 
-                saveData.Profiles[i].Args = EditorGUILayout.DelayedTextField("Arguments", saveData.Profiles[i].Args);
+                saveData.Profiles[i].Args = EditorGUILayout.TextField("Arguments", saveData.Profiles[i].Args);
 
                 saveData.Profiles[i].UseExternalIcon = EditorGUILayout.Toggle("Use External Icon", saveData.Profiles[i].UseExternalIcon);
                 EditorGUI.indentLevel++;
@@ -177,7 +177,7 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
                 EditorGUI.EndDisabledGroup();
                 EditorGUI.BeginDisabledGroup(!saveData.Profiles[i].UseExternalIcon);
                 EditorGUILayout.BeginHorizontal();
-                saveData.Profiles[i].ExternalIconPath = EditorGUILayout.DelayedTextField("External Icon", saveData.Profiles[i].ExternalIconPath);
+                saveData.Profiles[i].ExternalIconPath = EditorGUILayout.TextField("External Icon", saveData.Profiles[i].ExternalIconPath);
                 if (GUILayout.Button("Load Icon", GUILayout.Width(100)))
                 {
                     string path = EditorUtility.OpenFilePanelWithFilters("Open", "Assets", new string[] { "Image File", "png,jpg,psd" });
