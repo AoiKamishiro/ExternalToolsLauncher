@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,8 +19,9 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
         [Serializable]
         public struct Profile
         {
-            public bool Show;
-            public string Name, Path, Args, Icon;
+            public bool Show, UseExternalIcon;
+            public string Name, Path, Args, Icon, ExternalIconPath;
+            public DateTimeOffset LastChanged, LastExternalIconLoaded;
 
             [NonSerialized]
             private string _uuid;
@@ -44,10 +46,52 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
             {
                 get
                 {
-                    if (_iconTexture != null && AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(_iconTexture)) != Icon) { _iconTexture = null; }
-                    if (_iconTexture == null) { _iconTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(Icon)); }
+                    if (!UseExternalIcon)
+                    {
+                        if (_iconTexture != null && AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(_iconTexture)) != Icon) { _iconTexture = null; }
+                        if (_iconTexture == null) { _iconTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath(Icon)); }
+                    }
+                    else
+                    {
+                        if (_iconTexture == null)
+                        {
+                            _iconTexture = new Texture2D(0, 0);
+                            if (File.Exists(ExternalIconPath))
+                            {
+                                _iconTexture = LoadExternalTexture(ExternalIconPath);
+                            }
+                        }
+                        else
+                        {
+                            if (LastExternalIconLoaded < LastChanged)
+                            {
+                                _iconTexture = LoadExternalTexture(ExternalIconPath);
+                            }
+                        }
+                    }
                     return _iconTexture;
                 }
+            }
+
+            /// <summary>
+            /// 与えられたパスから画像を読み込みます。
+            /// </summary>
+            /// <param name="path">画像ファイルのパス</param>
+            /// <returns></returns>
+            private Texture2D LoadExternalTexture(string path)
+            {
+                byte[] values;
+                Texture2D texture2D = new Texture2D(1, 1);
+                using (FileStream fs = new FileStream(path, FileMode.Open))
+                {
+                    using (BinaryReader bin = new BinaryReader(fs))
+                    {
+                        values = bin.ReadBytes((int)bin.BaseStream.Length);
+                    }
+                }
+                texture2D.LoadImage(values);
+                LastExternalIconLoaded = DateTimeOffset.UtcNow;
+                return texture2D;
             }
         }
     }

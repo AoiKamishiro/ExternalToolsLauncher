@@ -168,8 +168,26 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
                 EditorGUILayout.EndHorizontal();
 
                 saveData.Profiles[i].Args = EditorGUILayout.DelayedTextField("Arguments", saveData.Profiles[i].Args);
-                int iconOrder = EditorGUILayout.Popup("Icon", GetIconOrder(saveData.Profiles[i].Icon), Icons.Values.ToArray());
+
+                saveData.Profiles[i].UseExternalIcon = EditorGUILayout.Toggle("Use External Icon", saveData.Profiles[i].UseExternalIcon);
+                EditorGUI.indentLevel++;
+                EditorGUI.BeginDisabledGroup(saveData.Profiles[i].UseExternalIcon);
+                int iconOrder = EditorGUILayout.Popup("Internal Icon", GetIconOrder(saveData.Profiles[i].Icon), Icons.Values.ToArray());
                 saveData.Profiles[i].Icon = Icons.Keys.ToArray()[iconOrder];
+                EditorGUI.EndDisabledGroup();
+                EditorGUI.BeginDisabledGroup(!saveData.Profiles[i].UseExternalIcon);
+                EditorGUILayout.BeginHorizontal();
+                saveData.Profiles[i].ExternalIconPath = EditorGUILayout.DelayedTextField("External Icon", saveData.Profiles[i].ExternalIconPath);
+                if (GUILayout.Button("Load Icon", GUILayout.Width(100)))
+                {
+                    string path = EditorUtility.OpenFilePanelWithFilters("Open", "Assets", new string[] { "Image File", "png,jpg,psd" });
+                    if (!string.IsNullOrEmpty(path)) saveData.Profiles[i].ExternalIconPath = path;
+                }
+                EditorGUILayout.EndHorizontal();
+                EditorGUI.EndDisabledGroup();
+                EditorGUI.indentLevel--;
+
+
                 EditorGUILayout.BeginHorizontal();
                 EditorGUI.BeginDisabledGroup(i == 0);
                 if (GUILayout.Button("Up"))
@@ -197,6 +215,8 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
                 EditorGUILayout.EndVertical();
 
                 EditorGUILayout.EndHorizontal();
+
+                saveData.Profiles[i].LastChanged = System.DateTimeOffset.UtcNow;
             }
             if (!string.IsNullOrEmpty(deleteGuid))
             {
