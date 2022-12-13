@@ -20,6 +20,10 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
         /// {SlnName}と置換される値。ソリューションファイルの名前。
         /// </summary>
         private static readonly string slnName = $"{Directory.GetParent(Application.dataPath).Name}.sln";
+        /// <summary>
+        /// {SelectPath}と置換される値。選択されたファイパス名。
+        /// </summary>
+        private static string selectPath;
         static AddButtonsToRight() => Init();
 
         /// <summary>
@@ -49,8 +53,8 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
                 {
                     if (GUILayout.Button(new GUIContent(null, p.IconTexture, p.Name), "Command"))
                     {
-                        string file = p.Path.Replace("{ProjectPath}", dirPath).Replace("{ProjectName}", projName).Replace("{SlnName}", slnName);
-                        string args = p.Args.Replace("{ProjectPath}", dirPath).Replace("{ProjectName}", projName).Replace("{SlnName}", slnName);
+                        string file = GetReplacedString(p.Path);
+                        string args = GetReplacedString(p.Args);
                         Process process = new Process();
                         process.StartInfo.FileName = file;
                         process.StartInfo.Arguments = args;
@@ -58,6 +62,21 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// 変数を置換した値を返します。
+        /// </summary>
+        /// <param name="str">置換まえの文字列</param>
+        /// <returns></returns>
+        private static string GetReplacedString(string str)
+        {
+            selectPath = AssetDatabase.GetAssetPath(Selection.activeObject);
+            return str.
+                Replace("{ProjectPath}", dirPath).
+                Replace("{ProjectName}", projName).
+                Replace("{SlnName}", slnName).
+                Replace("{SelectPath}", selectPath);
         }
     }
 }

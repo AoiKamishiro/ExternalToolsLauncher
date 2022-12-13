@@ -112,7 +112,7 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
             {
                 Application.OpenURL("https://github.com/AoiKamishiro/ExternalToolsLauncher");
             }
-            EditorGUILayout.HelpBox("{ProjectPath}はプロジェクトのフォルダのパスを返します。\n{ProjectName}はプロジェクトのフォルダ名を返します。\n{SlnName}はソリューションファイル名を返します。", MessageType.Info);
+            EditorGUILayout.HelpBox("{ProjectPath}はプロジェクトのフォルダのパスを返します。\n{ProjectName}はプロジェクトのフォルダ名を返します。\n{SelectPath}は選択されたアセットのパスを返します。\n{SlnName}はソリューションファイル名を返します。", MessageType.Info);
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("Add Profile"))
