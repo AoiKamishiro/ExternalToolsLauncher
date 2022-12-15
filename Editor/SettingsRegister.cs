@@ -162,7 +162,11 @@ namespace online.kamishiro.unityeditor.externaltoolslauncher
                 saveData.Profiles[i].Path = EditorGUILayout.TextField("Path", saveData.Profiles[i].Path);
                 if (GUILayout.Button("Load", GUILayout.Width(100)))
                 {
-                    string path = EditorUtility.OpenFilePanel("Open", "Assets", "*");
+#if UNITY_EDITOR_OSX
+                    string path = EditorUtility.OpenFilePanelWithFilters("Open", "Assets", new string[] {"All File",""});
+#else
+                    string path = EditorUtility.OpenFilePanelWithFilters("Open", "Assets", new string[] {"All File","*"});
+#endif
                     if (!string.IsNullOrEmpty(path)) saveData.Profiles[i].Path = path;
                 }
                 EditorGUILayout.EndHorizontal();
