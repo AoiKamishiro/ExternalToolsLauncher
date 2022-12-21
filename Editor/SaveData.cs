@@ -3,7 +3,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace online.kamishiro.unityeditor.externaltoolslauncher
+namespace online.kamishiro.externaltoolslauncher
 {
     /// <summary>
     /// 設定データを保存する為の構造体

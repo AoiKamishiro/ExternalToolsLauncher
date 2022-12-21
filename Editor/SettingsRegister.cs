@@ -6,7 +6,7 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
-namespace online.kamishiro.unityeditor.externaltoolslauncher
+namespace online.kamishiro.externaltoolslauncher
 {
     /// <summary>
     /// Preference 内で設定を変更する為のクラス

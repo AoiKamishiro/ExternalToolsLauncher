@@ -11,7 +11,7 @@ using UnityEngine.UIElements;
 using UnityEngine.Experimental.UIElements;
 #endif
 
-namespace online.kamishiro.unityeditor.externaltoolslauncher
+namespace online.kamishiro.externaltoolslauncher
 {
     public static class ToolbarCallback
     {
