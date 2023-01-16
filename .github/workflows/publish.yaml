@@ -1,0 +1,18 @@
+name: npm
+on: [push, pull_request]
+jobs:
+  release:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - shell: bash
+        env:
+          NPM_USER: ${{ secrets.NPM_USR }}
+          NPM_PASS: ${{ secrets.NPM_PASSWD }}
+          NPM_MAIL: ${{ secrets.NPM_EMAIL }}
+          NPM_SRV: https://upm.kamishiro.online/
+        run: |
+          npm install -g npm-cli-login > /dev/null
+          npm-cli-login -u $NPM_USER -p $NPM_PASS -e $NPM_MAIL -r $NPM_SRV          
+          npm publish --registry $NPM_SRV
