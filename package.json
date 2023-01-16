@@ -1,7 +1,7 @@
 {
   "name": "online.kamishiro.externaltoolslauncher",
   "author": "Kamishiro Technologies",
-  "version": "",
+  "version": "1.7.6",
   "displayName": "External Tools Launcher",
   "description": "Unityエディタの上部に任意のアプリの起動ボタンを追加します",
   "unity": "2019.4",
