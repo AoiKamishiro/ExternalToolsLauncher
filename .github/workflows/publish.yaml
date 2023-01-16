@@ -5,14 +5,26 @@ jobs:
     name: Publish
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - shell: bash
+      - name: prepare
+        shell: bash
+        run: sudo apt update && sudo apt install jq -y
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: build
+        shell: bash
         env:
           NPM_USER: ${{ secrets.NPM_USR }}
           NPM_PASS: ${{ secrets.NPM_PASSWD }}
-          NPM_MAIL: ${{ secrets.NPM_EMAIL }}
-          NPM_SRV: https://upm.kamishiro.online/
+          NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
+          NPM_REGISTRY: upm.kamishiro.online
         run: |
-          npm install -g npm-cli-login > /dev/null
-          npm-cli-login -u $NPM_USER -p $NPM_PASS -e $NPM_MAIL -r $NPM_SRV          
-          npm publish --registry $NPM_SRV
+          DATA='{"name": "'"$NPM_USER"'", "password": "'"$NPM_PASS"'"}'
+          USER="$NPM_USER":"$NPM_PASS"
+          ADDR=https://$NPM_REGISTRY/-/user/org.couchdb.user:$NPM_USER
+
+          RETURN=$(curl -s -H "Accept: application/json" -H "Content-Type:application/json" -X PUT --data "$DATA" --user "$USER" $ADDR)
+          TOKEN=$(echo $RETURN | jq '.token')
+
+          npm set registry "https://$NPM_REGISTRY/"
+          npm set //$NPM_REGISTRY/:_authToken $TOKEN
+          npm publish
