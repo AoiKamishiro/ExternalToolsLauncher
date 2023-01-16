@@ -17,7 +17,7 @@ Unity エディタ上部の再生ボタン横に各種機能が追加されま�
 1. Unity のメニューバーから `Edit` -> `Project Settings` を開く
 2. Project Settings の左上にある `Package Manager` に、次の内容で `Scoped Registries` を追加
    > `Name` -> `ExternalToolsLauncher`  
-   > `URL` -> `https://package.openupm.com`  
+   > `URL` -> `https://upm.kamishiro.online/`  
    > `Scope(s)` -> `online.kamishiro.externaltoolslauncher`
 3. Unity のメニューバーから `Windows` -> `Package Manager` を開く
 4. Package Manager の左上にある `+` ボタン右のドロップダウンから、`My Registries` を選択
