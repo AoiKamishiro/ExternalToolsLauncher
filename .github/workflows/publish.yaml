@@ -1,5 +1,8 @@
 name: npm
-on: [push, pull_request]
+on:
+  push:
+    tags:
+      - '*'
 jobs:
   release:
     name: Publish
@@ -10,6 +13,13 @@ jobs:
         run: sudo apt update && sudo apt install jq -y
       - name: checkout
         uses: actions/checkout@v3
+      - name: version
+        run: |
+          VERSION=${GITHUB_REF##*/}
+          PROCESS='.version|="'$VERSION'"'          
+          PACKAGE=$(cat package.json | jq $PROCESS)
+          rm package.json
+          echo $PACKAGE > package.json
       - name: build
         shell: bash
         env:
