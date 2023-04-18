@@ -30,7 +30,7 @@
     },
     {
       "Show": true,
-      "Name": "Photosop",
+      "Name": "Photoshop",
       "Path": "C:\\Program Files\\Adobe\\Adobe Photoshop 2023\\Photoshop.exe",
       "Args": "\"{ProjectPath}/{SelectPath}\"",
       "Icon": "fc8453d4b473c1a48a5c3ab8eac7da92"
